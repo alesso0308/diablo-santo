@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 1400">
+  <defs>
+    <linearGradient id="bg2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2b2522"/>
+      <stop offset="100%" stop-color="#0e0d0d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="1400" fill="url(#bg2)"/>
+  <rect x="350" y="210" width="500" height="900" rx="38" fill="#131313"/>
+  <text x="600" y="700" text-anchor="middle" fill="#d9c7a3" font-size="78" font-family="Arial">FOUNDER</text>
+  <text x="600" y="780" text-anchor="middle" fill="#d9c7a3" font-size="46" font-family="Arial">TEE 01 BACK</text>
+</svg>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shop | DIABLO SANTO</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="page-inner">
+    <div class="ambient-bg" aria-hidden="true"></div>
+    <div class="announcement" aria-hidden="true">
+      <div class="announcement-track">
+        <span>FOUNDER DROP 01</span>
+        <span>ENVIO NACIONAL</span>
+        <span>SOLO 15 PIEZAS</span>
+        <span>NI DIABLO. NI SANTO.</span>
+        <span>DIABLO SANTO</span>
+        <span>FOUNDER DROP 01</span>
+        <span>ENVIO NACIONAL</span>
+        <span>SOLO 15 PIEZAS</span>
+        <span>NI DIABLO. NI SANTO.</span>
+        <span>DIABLO SANTO</span>
+      </div>
+    </div>
+
+    <header class="navbar scrolled" id="navbar">
+      <button class="icon-btn" id="menuBtn" aria-label="Abrir menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+      <a href="index.html" class="brand">DIABLO SANTO</a>
+      <button class="bag-btn" id="openCartTop" aria-label="Abrir carrito">
+        <span class="bag-icon"></span>
+        <span class="bag-count" id="cartCount">0</span>
+      </button>
+    </header>
+
+    <div class="nav-overlay" id="navOverlay"></div>
+    <nav class="nav-menu" id="navDrawer" aria-label="Menu principal">
+      <button class="nav-close" id="menuClose" type="button">Close</button>
+      <div class="nav-menu-inner">
+        <a href="index.html">Home</a>
+        <a href="shop.html">Shop</a>
+        <a href="purpose.html">Purpose</a>
+        <a href="politicas.html">Politicas</a>
+        <a href="contacto.html">Contacto</a>
+      </div>
+      <div class="nav-menu-social">
+        <a href="https://www.instagram.com/diablo__santo" target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a href="https://www.tiktok.com/@diablo_santocr" target="_blank" rel="noopener noreferrer">TikTok</a>
+      </div>
+    </nav>
+
+    <main>
+      <header class="page-header shop-intro">
+        <div class="container reveal">
+          <p class="eyebrow">Shop</p>
+          <h1 class="serif">Piezas<br />del movimiento</h1>
+          <p>Dos piezas. Una intencion. Nada mas.</p>
+        </div>
+      </header>
+
+      <div class="container shop-list">
+        <article
+          class="editorial-product reveal"
+          id="founder-tee"
+          data-product="founder-tee-01"
+        >
+          <div class="editorial-visual">
+            <div class="product-carousel" data-carousel>
+              <div class="carousel-viewport">
+                <div class="carousel-track">
+                  <figure class="carousel-slide">
+                    <img src="Images/frente.PNG" alt="Founder Tee 01 — frente" />
+                  </figure>
+                  <figure class="carousel-slide">
+                    <img src="Images/frente humano.PNG" alt="Founder Tee 01 — fit frente" />
+                  </figure>
+                  <figure class="carousel-slide">
+                    <img src="Images/espalda.PNG" alt="Founder Tee 01 — espalda" />
+                  </figure>
+                  <figure class="carousel-slide">
+                    <img src="Images/espalda.humano.PNG" alt="Founder Tee 01 — fit espalda" />
+                  </figure>
+                </div>
+              </div>
+              <button
+                type="button"
+                class="carousel-nav carousel-nav--prev"
+                aria-label="Imagen anterior"
+              ></button>
+              <button
+                type="button"
+                class="carousel-nav carousel-nav--next"
+                aria-label="Imagen siguiente"
+              ></button>
+              <div class="carousel-dots" role="tablist" aria-label="Galeria del producto"></div>
+            </div>
+          </div>
+          <div class="editorial-info">
+            <p class="eyebrow">Drop 01 — 15 piezas</p>
+            <h2>Founder Tee 01</h2>
+            <p class="price">₡21.900</p>
+            <p class="editorial-note">
+              Algodon pesado, corte estructurado, presencia editorial. La pieza
+              fundacional del movimiento Diablo Santo.
+            </p>
+            <div class="selectors">
+              <div class="selector-block">
+                <p>Talla</p>
+                <div class="size-options">
+                  <button type="button" class="size active" data-size="S">S</button>
+                  <button type="button" class="size" data-size="M">M</button>
+                  <button type="button" class="size" data-size="L">L</button>
+                  <button type="button" class="size" data-size="XL">XL</button>
+                </div>
+              </div>
+              <div class="selector-block">
+                <p>Cantidad</p>
+                <div class="qty-wrap">
+                  <button type="button" data-qty-minus aria-label="Menos">-</button>
+                  <span data-qty>1</span>
+                  <button type="button" data-qty-plus aria-label="Mas">+</button>
+                </div>
+              </div>
+            </div>
+            <div class="product-actions">
+              <button type="button" class="btn btn-primary" data-add-cart>
+                RECLAMAR TU PIEZA
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <div class="shop-caps-label reveal">
+          <p class="eyebrow">Caps</p>
+          <h3 class="serif">Presencia diaria</h3>
+        </div>
+
+        <div class="caps-row">
+          <article
+            class="editorial-product cap-product editorial-product--reverse reveal"
+            id="cap-01"
+            data-product="cap-01"
+          >
+            <div class="editorial-visual">
+              <img src="assets/cap-01.svg" alt="Cap 01 Barrio" />
+            </div>
+            <div class="editorial-info">
+              <p class="eyebrow">Cap 01</p>
+              <h2>Barrio</h2>
+              <p class="price">₡12.900</p>
+              <p class="editorial-note">
+                Perfil bajo, estructura firme, monograma DS en relieve.
+              </p>
+              <div class="selectors">
+                <div class="selector-block">
+                  <p>Talla</p>
+                  <div class="size-options">
+                    <button type="button" class="size active" data-size="Ajustable">
+                      Ajustable
+                    </button>
+                  </div>
+                </div>
+                <div class="selector-block">
+                  <p>Cantidad</p>
+                  <div class="qty-wrap">
+                    <button type="button" data-qty-minus>-</button>
+                    <span data-qty>1</span>
+                    <button type="button" data-qty-plus>+</button>
+                  </div>
+                </div>
+              </div>
+              <div class="product-actions">
+                <button type="button" class="btn btn-primary" data-add-cart>
+                  RECLAMAR TU PIEZA
+                </button>
+              </div>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <section class="strip-scarcity reveal">
+        <div class="container">
+          <h3>SOLO EXISTEN 15.</h3>
+          <p id="stockLabel">8 / 15 DISPONIBLES</p>
+          <div class="stock-bar"><span id="stockProgress"></span></div>
+        </div>
+      </section>
+
+      <section class="home-whatsapp reveal" style="background: var(--ivory); border-top: none; padding-top: 2rem">
+        <button type="button" class="btn btn-whatsapp" id="whatsappCheckout">
+          FINALIZAR POR WHATSAPP
+        </button>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer-grid">
+        <p class="footer-logo">DIABLO SANTO</p>
+        <nav class="footer-nav">
+          <a href="index.html">Home</a>
+          <a href="purpose.html">Purpose</a>
+          <a href="contacto.html">Contacto</a>
+        </nav>
+        <nav class="footer-social">
+          <a href="https://www.instagram.com/diablo__santo" target="_blank" rel="noopener noreferrer">Instagram</a>
+          <a href="https://www.tiktok.com/@diablo_santocr" target="_blank" rel="noopener noreferrer">TikTok</a>
+          <a href="https://wa.me/50685838140" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+        </nav>
+        <p class="footer-copy">2026 — Presencia sobre volumen</p>
+      </div>
+    </footer>
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <aside class="cart-drawer" id="cartDrawer">
+      <div class="cart-header">
+        <h4>Tu seleccion</h4>
+        <button type="button" id="closeCart">Cerrar</button>
+      </div>
+      <div class="cart-items" id="cartItems"></div>
+      <div class="cart-footer">
+        <div class="cart-total-row">
+          <span>Total</span>
+          <strong id="cartTotal">₡0</strong>
+        </div>
+        <button type="button" class="btn btn-whatsapp" id="cartWhatsappBtn" disabled>
+          FINALIZAR POR WHATSAPP
+        </button>
+      </div>
+    </aside>
+
+    <script type="module" src="/core.js"></script>
+    <script type="module" src="/shop.js"></script>
+  </body>
+</html>
