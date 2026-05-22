@@ -17,10 +17,10 @@ const DS_PRODUCTS = {
     image: "Images/1.png",
     sizes: ["Ajustable"],
     variants: [
-      { id: "black-cream", label: "Black / Cream", image: "Images/1.png" },
-      { id: "brown-beige", label: "Brown / Beige", image: "Images/2.png" },
-      { id: "white-black", label: "White / Black", image: "Images/3.png" },
-      { id: "green-cream", label: "Green / Cream", image: "Images/4.png" },
+      { id: "brown-beige", label: "Brown / Beige", image: "Images/1.png" },
+      { id: "black-white", label: "Black / White", image: "Images/2.png" },
+      { id: "black-red", label: "Black / Red", image: "Images/3.png" },
+      { id: "white-black", label: "White / Black", image: "Images/4.png" },
     ],
   },
 };
