@@ -28,20 +28,24 @@ const DS_PRODUCTS = {
 const getCapVariant = (product, variantId) =>
   product?.variants?.find((v) => v.id === variantId) || product?.variants?.[0];
 
-const resolveCartImage = (src) => {
-  if (!src || /^https?:\/\//i.test(src)) return src || "";
-  const relative = src.replace(/^\//, "").replace(/^\.\//, "");
-  try {
-    return new URL(relative, window.location.href).href;
-  } catch {
-    return relative;
+const toRelativeImagePath = (src) => {
+  if (!src) return "";
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      const match = new URL(src).pathname.match(/(?:^|\/)Images\/[^/]+$/i);
+      if (match) return match[0].replace(/^\//, "");
+    } catch {
+      /* keep original */
+    }
   }
+  return src.replace(/^\//, "").replace(/^\.\//, "");
 };
+
+const resolveCartImage = (src) => toRelativeImagePath(src);
 
 const normalizeCartItem = (item) => {
   if (!item?.image) return item;
-  const image = item.image.replace(/^\//, "").replace(/^\.\//, "");
-  return { ...item, image };
+  return { ...item, image: toRelativeImagePath(item.image) };
 };
 
 const currencyCRC = (amount) => `₡${amount.toLocaleString("es-CR")}`;
@@ -60,6 +64,7 @@ const saveCart = (cart) => {
 };
 
 let cart = loadCart();
+saveCart(cart);
 
 const getCartTotal = () =>
   cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -92,21 +97,44 @@ const updateCartUI = () => {
   cart.forEach((item, index) => {
     const row = document.createElement("article");
     row.className = "cart-item";
-    const imgSrc = resolveCartImage(item.image);
-    row.innerHTML = `
-      <div class="cart-item-thumb">
-        <img src="${imgSrc}" alt="${item.name}" loading="lazy" decoding="async" />
-      </div>
-      <div class="cart-meta">
-        <p class="name">${item.name}</p>
-        <p>${item.variant ? `Color: ${item.variant}<br />` : ""}Talla: ${item.size}</p>
-        <p>Cantidad: ${item.quantity}</p>
-      </div>
-      <div>
-        <p>${currencyCRC(item.price * item.quantity)}</p>
-        <button type="button" data-remove="${index}" class="cart-remove">Quitar</button>
-      </div>
-    `;
+
+    const thumb = document.createElement("div");
+    thumb.className = "cart-item-thumb";
+    const img = document.createElement("img");
+    img.src = resolveCartImage(item.image);
+    img.alt = item.name || "Producto";
+    img.loading = "lazy";
+    img.decoding = "async";
+    thumb.appendChild(img);
+
+    const meta = document.createElement("div");
+    meta.className = "cart-meta";
+    const name = document.createElement("p");
+    name.className = "name";
+    name.textContent = item.name;
+    meta.appendChild(name);
+
+    const details = document.createElement("p");
+    details.innerHTML = item.variant
+      ? `Color: ${item.variant}<br />Talla: ${item.size}`
+      : `Talla: ${item.size}`;
+    meta.appendChild(details);
+
+    const qty = document.createElement("p");
+    qty.textContent = `Cantidad: ${item.quantity}`;
+    meta.appendChild(qty);
+
+    const aside = document.createElement("div");
+    const price = document.createElement("p");
+    price.textContent = currencyCRC(item.price * item.quantity);
+    const removeBtn = document.createElement("button");
+    removeBtn.type = "button";
+    removeBtn.className = "cart-remove";
+    removeBtn.dataset.remove = String(index);
+    removeBtn.textContent = "Quitar";
+    aside.append(price, removeBtn);
+
+    row.append(thumb, meta, aside);
     itemsEl.appendChild(row);
   });
 
