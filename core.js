@@ -28,6 +28,12 @@ const DS_PRODUCTS = {
 const getCapVariant = (product, variantId) =>
   product?.variants?.find((v) => v.id === variantId) || product?.variants?.[0];
 
+const resolveCartImage = (src) => {
+  if (!src || /^https?:\/\//i.test(src)) return src || "";
+  const clean = src.replace(/^\.\//, "");
+  return clean.startsWith("/") ? clean : `/${clean}`;
+};
+
 const currencyCRC = (amount) => `₡${amount.toLocaleString("es-CR")}`;
 
 const loadCart = () => {
@@ -75,8 +81,11 @@ const updateCartUI = () => {
   cart.forEach((item, index) => {
     const row = document.createElement("article");
     row.className = "cart-item";
+    const imgSrc = resolveCartImage(item.image);
     row.innerHTML = `
-      <img src="${item.image}" alt="${item.name}" />
+      <div class="cart-item-thumb">
+        <img src="${imgSrc}" alt="${item.name}" loading="lazy" decoding="async" />
+      </div>
       <div class="cart-meta">
         <p class="name">${item.name}</p>
         <p>${item.variant ? `Color: ${item.variant}<br />` : ""}Talla: ${item.size}</p>
