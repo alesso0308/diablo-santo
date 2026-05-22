@@ -2,25 +2,64 @@
 const DS_WHATSAPP = "50685838140";
 const DS_CART_KEY = "ds-cart";
 
+const DS_IMAGES = {
+  teeFront: "/images/frente.png",
+  teeFrontFit: "/images/frente-humano.png",
+  teeBack: "/images/espalda.png",
+  teeBackFit: "/images/espalda-humano.png",
+  capBrownBeige: "/images/1.png",
+  capBlackWhite: "/images/2.png",
+  capBlackRed: "/images/3.png",
+  capWhiteBlack: "/images/4.png",
+};
+
+const LEGACY_IMAGE_ALIASES = {
+  "frente.png": DS_IMAGES.teeFront,
+  "frente-humano.png": DS_IMAGES.teeFrontFit,
+  "frente humano.png": DS_IMAGES.teeFrontFit,
+  "espalda.png": DS_IMAGES.teeBack,
+  "espalda-humano.png": DS_IMAGES.teeBackFit,
+  "espalda.humano.png": DS_IMAGES.teeBackFit,
+  "1.png": DS_IMAGES.capBrownBeige,
+  "2.png": DS_IMAGES.capBlackWhite,
+  "3.png": DS_IMAGES.capBlackRed,
+  "4.png": DS_IMAGES.capWhiteBlack,
+};
+
+const normalizeImagePath = (src) => {
+  if (!src) return "";
+  let filename = src;
+  if (/^https?:\/\//i.test(src)) {
+    try {
+      filename = new URL(src).pathname;
+    } catch {
+      return src;
+    }
+  }
+  filename = filename.split(/[/\\]/).pop() || filename;
+  filename = filename.toLowerCase().replace(/\s+/g, "-");
+  return LEGACY_IMAGE_ALIASES[filename] || `/images/${filename}`;
+};
+
 const DS_PRODUCTS = {
   "founder-tee-01": {
     id: "founder-tee-01",
     name: "Good Luck Tee 01",
     price: 21900,
-    image: "Images/frente.PNG",
+    image: DS_IMAGES.teeFront,
     sizes: ["S", "M", "L", "XL"],
   },
   "cap-01": {
     id: "cap-01",
     name: "Cap 01 — Barrio",
     price: 12900,
-    image: "Images/1.png",
+    image: DS_IMAGES.capBrownBeige,
     sizes: ["Ajustable"],
     variants: [
-      { id: "brown-beige", label: "Brown / Beige", image: "Images/1.png" },
-      { id: "black-white", label: "Black / White", image: "Images/2.png" },
-      { id: "black-red", label: "Black / Red", image: "Images/3.png" },
-      { id: "white-black", label: "White / Black", image: "Images/4.png" },
+      { id: "brown-beige", label: "Brown / Beige", image: DS_IMAGES.capBrownBeige },
+      { id: "black-white", label: "Black / White", image: DS_IMAGES.capBlackWhite },
+      { id: "black-red", label: "Black / Red", image: DS_IMAGES.capBlackRed },
+      { id: "white-black", label: "White / Black", image: DS_IMAGES.capWhiteBlack },
     ],
   },
 };
@@ -28,24 +67,11 @@ const DS_PRODUCTS = {
 const getCapVariant = (product, variantId) =>
   product?.variants?.find((v) => v.id === variantId) || product?.variants?.[0];
 
-const toRelativeImagePath = (src) => {
-  if (!src) return "";
-  if (/^https?:\/\//i.test(src)) {
-    try {
-      const match = new URL(src).pathname.match(/(?:^|\/)Images\/[^/]+$/i);
-      if (match) return match[0].replace(/^\//, "");
-    } catch {
-      /* keep original */
-    }
-  }
-  return src.replace(/^\//, "").replace(/^\.\//, "");
-};
-
-const resolveCartImage = (src) => toRelativeImagePath(src);
+const resolveCartImage = (src) => normalizeImagePath(src);
 
 const normalizeCartItem = (item) => {
   if (!item?.image) return item;
-  return { ...item, image: toRelativeImagePath(item.image) };
+  return { ...item, image: normalizeImagePath(item.image) };
 };
 
 const currencyCRC = (amount) => `₡${amount.toLocaleString("es-CR")}`;
@@ -162,7 +188,7 @@ const addToCart = (productId, size, quantity = 1, variantId = null) => {
 
   const variant = variantId ? getCapVariant(product, variantId) : null;
   const lineVariant = variant?.label || null;
-  const lineImage = (variant?.image || product.image || "").replace(/^\//, "");
+  const lineImage = normalizeImagePath(variant?.image || product.image || "");
 
   const existing = cart.find(
     (item) =>
