@@ -30,15 +30,26 @@ const getCapVariant = (product, variantId) =>
 
 const resolveCartImage = (src) => {
   if (!src || /^https?:\/\//i.test(src)) return src || "";
-  const clean = src.replace(/^\.\//, "");
-  return clean.startsWith("/") ? clean : `/${clean}`;
+  const relative = src.replace(/^\//, "").replace(/^\.\//, "");
+  try {
+    return new URL(relative, window.location.href).href;
+  } catch {
+    return relative;
+  }
+};
+
+const normalizeCartItem = (item) => {
+  if (!item?.image) return item;
+  const image = item.image.replace(/^\//, "").replace(/^\.\//, "");
+  return { ...item, image };
 };
 
 const currencyCRC = (amount) => `₡${amount.toLocaleString("es-CR")}`;
 
 const loadCart = () => {
   try {
-    return JSON.parse(localStorage.getItem(DS_CART_KEY)) || [];
+    const items = JSON.parse(localStorage.getItem(DS_CART_KEY)) || [];
+    return items.map(normalizeCartItem);
   } catch {
     return [];
   }
@@ -123,7 +134,7 @@ const addToCart = (productId, size, quantity = 1, variantId = null) => {
 
   const variant = variantId ? getCapVariant(product, variantId) : null;
   const lineVariant = variant?.label || null;
-  const lineImage = variant?.image || product.image;
+  const lineImage = (variant?.image || product.image || "").replace(/^\//, "");
 
   const existing = cart.find(
     (item) =>
