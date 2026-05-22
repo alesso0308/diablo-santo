@@ -5,7 +5,7 @@ const DS_CART_KEY = "ds-cart";
 const DS_PRODUCTS = {
   "founder-tee-01": {
     id: "founder-tee-01",
-    name: "Founder Tee 01",
+    name: "Good Luck Tee 01",
     price: 21900,
     image: "Images/frente.PNG",
     sizes: ["S", "M", "L", "XL"],
@@ -14,10 +14,19 @@ const DS_PRODUCTS = {
     id: "cap-01",
     name: "Cap 01 — Barrio",
     price: 12900,
-    image: "assets/cap-01.svg",
+    image: "Images/1.png",
     sizes: ["Ajustable"],
+    variants: [
+      { id: "black-cream", label: "Black / Cream", image: "Images/1.png" },
+      { id: "brown-beige", label: "Brown / Beige", image: "Images/2.png" },
+      { id: "white-black", label: "White / Black", image: "Images/3.png" },
+      { id: "green-cream", label: "Green / Cream", image: "Images/4.png" },
+    ],
   },
 };
+
+const getCapVariant = (product, variantId) =>
+  product?.variants?.find((v) => v.id === variantId) || product?.variants?.[0];
 
 const currencyCRC = (amount) => `₡${amount.toLocaleString("es-CR")}`;
 
@@ -70,7 +79,7 @@ const updateCartUI = () => {
       <img src="${item.image}" alt="${item.name}" />
       <div class="cart-meta">
         <p class="name">${item.name}</p>
-        <p>Talla: ${item.size}</p>
+        <p>${item.variant ? `Color: ${item.variant}<br />` : ""}Talla: ${item.size}</p>
         <p>Cantidad: ${item.quantity}</p>
       </div>
       <div>
@@ -99,12 +108,19 @@ const closeCart = () => {
   }
 };
 
-const addToCart = (productId, size, quantity = 1) => {
+const addToCart = (productId, size, quantity = 1, variantId = null) => {
   const product = DS_PRODUCTS[productId];
   if (!product) return;
 
+  const variant = variantId ? getCapVariant(product, variantId) : null;
+  const lineVariant = variant?.label || null;
+  const lineImage = variant?.image || product.image;
+
   const existing = cart.find(
-    (item) => item.id === productId && item.size === size
+    (item) =>
+      item.id === productId &&
+      item.size === size &&
+      (item.variant || null) === lineVariant
   );
 
   if (existing) {
@@ -114,8 +130,9 @@ const addToCart = (productId, size, quantity = 1) => {
       id: product.id,
       name: product.name,
       price: product.price,
-      image: product.image,
+      image: lineImage,
       size,
+      variant: lineVariant,
       quantity,
     });
   }
@@ -139,7 +156,7 @@ const buildWhatsAppMessage = () => {
     "",
     ...cart.map(
       (item) =>
-        `• ${item.name}\n  Talla: ${item.size}\n  Cantidad: ${item.quantity}\n  Subtotal: ${currencyCRC(item.price * item.quantity)}`
+        `• ${item.name}${item.variant ? `\n  Color: ${item.variant}` : ""}\n  Talla: ${item.size}\n  Cantidad: ${item.quantity}\n  Subtotal: ${currencyCRC(item.price * item.quantity)}`
     ),
     "",
     `Total: ${currencyCRC(getCartTotal())}`,
@@ -288,14 +305,24 @@ const initProductCarousels = () => {
     const prevBtn = root.querySelector(".carousel-nav--prev");
     const nextBtn = root.querySelector(".carousel-nav--next");
     const dotsWrap = root.querySelector(".carousel-dots");
+    const isCapCarousel = root.hasAttribute("data-cap-carousel");
 
     if (!track || !slides.length) return;
 
     const viewport = root.querySelector(".carousel-viewport");
     const imgs = [...root.querySelectorAll(".carousel-slide img")];
 
-    const syncFrameRatio = () => {
+    const syncFrameRatio = (slideIndex = 0) => {
       if (!viewport) return;
+      if (isCapCarousel) {
+        const activeImg = imgs[slideIndex] || imgs[0];
+        if (activeImg?.naturalWidth > 0) {
+          viewport.style.aspectRatio = `${activeImg.naturalWidth} / ${activeImg.naturalHeight}`;
+        } else {
+          viewport.style.aspectRatio = "4 / 5";
+        }
+        return;
+      }
       const loaded = imgs.filter((img) => img.naturalWidth > 0);
       if (!loaded.length) return;
       const ref =
@@ -336,7 +363,14 @@ const initProductCarousels = () => {
         dot.classList.toggle("is-active", di === index);
         dot.setAttribute("aria-selected", di === index ? "true" : "false");
       });
+      if (isCapCarousel) syncFrameRatio(index);
+      root.dispatchEvent(
+        new CustomEvent("ds-carousel-change", { detail: { index } })
+      );
     };
+
+    root.carouselGoTo = goTo;
+    root.carouselIndex = () => index;
 
     if (dotsWrap) {
       dotsWrap.innerHTML = "";
@@ -388,6 +422,98 @@ const initProductCarousels = () => {
   });
 };
 
+const initCapProduct = () => {
+  const capBlock = document.querySelector("[data-product='cap-01']");
+  const variantGroup = capBlock?.querySelector("[data-cap-variants]");
+  const capCarousel = capBlock?.querySelector("[data-cap-carousel]");
+  if (!variantGroup || !capCarousel) return;
+
+  DS_PRODUCTS["cap-01"]?.variants?.forEach((v) => {
+    const img = new Image();
+    img.src = v.image;
+  });
+
+  const variantButtons = [...variantGroup.querySelectorAll("[data-cap-slide]")];
+
+  const setActiveVariant = (slideIndex) => {
+    variantButtons.forEach((btn) => {
+      const match = Number(btn.getAttribute("data-cap-slide")) === slideIndex;
+      btn.classList.toggle("active", match);
+    });
+  };
+
+  const goToVariant = (slideIndex) => {
+    if (typeof capCarousel.carouselGoTo === "function") {
+      capCarousel.carouselGoTo(slideIndex);
+      return;
+    }
+    const track = capCarousel.querySelector(".carousel-track");
+    if (!track) return;
+    track.style.transform = `translate3d(-${slideIndex * 100}%, 0, 0)`;
+    setActiveVariant(slideIndex);
+  };
+
+  variantButtons.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const slideIndex = Number(btn.getAttribute("data-cap-slide"));
+      if (Number.isNaN(slideIndex)) return;
+      variantButtons.forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      goToVariant(slideIndex);
+    });
+  });
+
+  capCarousel.addEventListener("ds-carousel-change", (e) => {
+    setActiveVariant(e.detail.index);
+  });
+};
+
+const initShopProducts = () => {
+  document.querySelectorAll("[data-add-cart]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const block = btn.closest("[data-product]");
+      if (!block) return;
+
+      const productId = block.getAttribute("data-product");
+      const sizeBtn = block.querySelector(
+        ".size-options:not([data-cap-variants]) .size.active"
+      );
+      const size = sizeBtn?.getAttribute("data-size") || "Ajustable";
+      const qty = Number(block.querySelector("[data-qty]")?.textContent || 1);
+      const variantBtn = block.querySelector("[data-cap-variants] .size.active");
+      const variantId = variantBtn?.getAttribute("data-cap-variant") || null;
+
+      addToCart(productId, size, qty, variantId);
+    });
+  });
+
+  document.querySelectorAll("[data-product]").forEach((block) => {
+    block.querySelectorAll(".size-options:not([data-cap-variants])").forEach((group) => {
+      group.addEventListener("click", (e) => {
+        const sizeBtn = e.target.closest(".size");
+        if (!sizeBtn) return;
+        group.querySelectorAll(".size").forEach((b) => b.classList.remove("active"));
+        sizeBtn.classList.add("active");
+      });
+    });
+
+    const minus = block.querySelector("[data-qty-minus]");
+    const plus = block.querySelector("[data-qty-plus]");
+    const qtyEl = block.querySelector("[data-qty]");
+
+    minus?.addEventListener("click", () => {
+      const v = Math.max(1, Number(qtyEl.textContent) - 1);
+      qtyEl.textContent = String(v);
+    });
+
+    plus?.addEventListener("click", () => {
+      const v = Math.min(5, Number(qtyEl.textContent) + 1);
+      qtyEl.textContent = String(v);
+    });
+  });
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   initNavbar();
   initCart();
@@ -395,6 +521,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initParallax();
   initStock();
   initProductCarousels();
+  initCapProduct();
+  initShopProducts();
 });
 
 window.DS = {
