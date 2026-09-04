@@ -21,9 +21,6 @@ export default defineConfig({
     port: 5173,
     strictPort: false,
     open: false,
-    watch: {
-      ignored: ["**/src/**", "**/.next/**"],
-    },
   },
   preview: {
     host: true,

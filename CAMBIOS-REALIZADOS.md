@@ -1,0 +1,22 @@
+# Cambios realizados
+
+- Se conservó el diseño y las cinco páginas del sitio original.
+- La compra continúa terminando por WhatsApp; no se agregó pasarela de pago.
+- Se creó control de pedidos e inventario por talla y color en Google Sheets.
+- El inventario se rebaja únicamente al confirmar una venta.
+- Una cancelación posterior devuelve automáticamente el stock.
+- Los precios oficiales y el total de WhatsApp se calculan en la hoja privada.
+- El carrito ya no guarda precios como datos confiables en el navegador.
+- El pedido lleva un identificador único para verificarlo contra la hoja.
+- SINPE y nombre del titular se retiraron del JavaScript público.
+- Los costos de envío se administran desde la hoja privada.
+- Las tallas y colores agotados se desactivan automáticamente.
+- Se limita la cantidad al stock real disponible.
+- Las imágenes PNG pesadas se sustituyeron por WebP responsivo de 800 y 1400 px.
+- Se agregó carga diferida, dimensiones y decodificación asíncrona de imágenes.
+- Se completó el funcionamiento de la aplicación instalable y su caché básica.
+- Se agregaron descripciones para buscadores a todas las páginas.
+- Se agregaron encabezados de seguridad para Vercel.
+- Se mejoró el uso con teclado, los estados deshabilitados y el movimiento reducido.
+- Se eliminó la versión Next.js que no formaba parte de la publicación de Vercel.
+- Se excluyeron `node_modules`, el `dist` antiguo y el historial Git del resultado final.
