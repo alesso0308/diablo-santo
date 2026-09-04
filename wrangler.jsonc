@@ -1,0 +1,7 @@
+{
+  "name": "diablo-santo",
+  "compatibility_date": "2026-09-03",
+  "assets": {
+    "directory": "./dist"
+  }
+}
